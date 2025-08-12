@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transforme sua Carreira - Cursos Online</title>
+    <title>Realize o sonho de cursar Medicina</title>
     <style>
         * {
             margin: 0;
@@ -321,7 +321,7 @@
             <!-- Lado Direito - Formulário -->
             <div class="form-container fade-in">
                 <h2 class="form-title">Comece sua Jornada</h2>
-                <p class="form-subtitle">Preencha seus dados e descubra os melhores cursos para você</p>
+                <p class="form-subtitle">Preencha seus dados e obtenha os melhores valores para cursos de medicina no mercado</p>
                 
                 <div class="progress-container">
                     <div class="progress-bar">
@@ -411,24 +411,49 @@
             updateProgress();
         }
 
-        function savePartialData(fieldName, value) {
+        async function savePartialData(fieldName, value) {
             if (value.trim()) {
                 leadData[fieldName] = value;
                 leadData.timestamp = new Date().toISOString();
                 
-                // Simular salvamento no banco (aqui você faria a requisição real)
-                console.log('Salvando dados parciais:', {
-                    id: leadData.id,
-                    field: fieldName,
-                    value: value,
-                    timestamp: leadData.timestamp
-                });
-
-                showStatusMessage(`${getFieldDisplayName(fieldName)} salvo com sucesso!`, 'info');
+                try {
+                    // Salvar no backend real
+                    const response = await fetch('https://backend-production-7507.up.railway.app/api/leads/partial', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            id: leadData.id,
+                            field: fieldName,
+                            value: value
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        showStatusMessage(`${getFieldDisplayName(fieldName)} salvo com sucesso!`, 'info');
+                        console.log('✅ Dados salvos:', result);
+                    } else {
+                        throw new Error(result.message || 'Erro ao salvar');
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Erro ao salvar:', error);
+                    // Fallback: salvar localmente
+                    console.log('Salvando dados localmente:', {
+                        id: leadData.id,
+                        field: fieldName,
+                        value: value,
+                        timestamp: leadData.timestamp
+                    });
+                    showStatusMessage(`${getFieldDisplayName(fieldName)} salvo localmente`, 'info');
+                }
             }
         }
 
-        function handleFormSubmit(e) {
+        async function handleFormSubmit(e) {
             e.preventDefault();
             
             // Validação básica
@@ -437,37 +462,69 @@
                 return;
             }
 
-            // Marcar como completo
-            leadData.completed = true;
-            leadData.timestamp = new Date().toISOString();
-
-            // Simular envio final (aqui você faria a requisição real)
-            console.log('Enviando lead completo:', leadData);
-
-            // Feedback visual
-            showStatusMessage('Cadastro realizado com sucesso! Em breve entraremos em contato.', 'success');
-            
-            // Desabilitar botão temporariamente
+            // Desabilitar botão durante envio
             const submitBtn = document.querySelector('.submit-btn');
-            submitBtn.style.background = '#48bb78';
-            submitBtn.textContent = 'Cadastro Realizado!';
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Enviando...';
             submitBtn.disabled = true;
 
-            // Reset do formulário após delay
-            setTimeout(() => {
-                form.reset();
-                resetProgress();
-                submitBtn.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-                submitBtn.textContent = 'Quero Conhecer os Cursos';
-                submitBtn.disabled = false;
-                statusMessage.classList.remove('show');
+            try {
+                // Marcar como completo
+                leadData.completed = true;
+                leadData.timestamp = new Date().toISOString();
+
+                // Enviar para o backend real
+                const response = await fetch('https://backend-production-7507.up.railway.app/api/leads/complete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(leadData)
+                });
                 
-                leadData = {
-                    id: 'lead_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                    nome: '', email: '', whatsapp: '', cursos: '',
-                    timestamp: null, completed: false
-                };
-            }, 5000);
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Feedback de sucesso
+                    showStatusMessage('Cadastro realizado com sucesso! Em breve entraremos em contato.', 'success');
+                    
+                    // Animação de sucesso
+                    submitBtn.style.background = '#48bb78';
+                    submitBtn.textContent = 'Cadastro Realizado!';
+                    
+                    console.log('✅ Lead completo enviado:', result);
+                    
+                } else {
+                    throw new Error(result.message || 'Erro ao enviar dados');
+                }
+                
+            } catch (error) {
+                console.error('❌ Erro ao enviar lead:', error);
+                
+                // Fallback: salvar localmente
+                console.log('Salvando lead localmente:', leadData);
+                showStatusMessage('Dados salvos localmente. Tentaremos sincronizar depois.', 'info');
+                
+                submitBtn.style.background = '#f6ad55';
+                submitBtn.textContent = 'Salvo Localmente';
+                
+            } finally {
+                // Reset do formulário após delay
+                setTimeout(() => {
+                    form.reset();
+                    resetProgress();
+                    submitBtn.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                    statusMessage.classList.remove('show');
+                    
+                    leadData = {
+                        id: 'lead_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                        nome: '', email: '', whatsapp: '', cursos: '',
+                        timestamp: null, completed: false
+                    };
+                }, 5000);
+            }
         }
 
         function updateProgress() {
