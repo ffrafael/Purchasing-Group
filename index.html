@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transforme sua Carreira - Cursos Online</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .hero-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            min-height: 90vh;
+        }
+
+        /* Texto Hero */
+        .hero-text {
+            color: white;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            line-height: 1.1;
+        }
+
+        .hero-text p {
+            font-size: 1.25rem;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            opacity: 0.95;
+        }
+
+        .stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            display: block;
+            color: #00d4aa;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Formulário */
+        .form-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .form-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-subtitle {
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+
+        /* Barra de Progresso */
+        .progress-container {
+            margin-bottom: 25px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 3px;
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            color: #718096;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        /* Campos do formulário */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+            transform: translateY(-1px);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Mensagens de Status */
+        .status-message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .status-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .status-success {
+            background: #f0fff4;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+
+        .status-info {
+            background: #ebf8ff;
+            color: #2a69ac;
+            border: 1px solid #90cdf4;
+        }
+
+        .status-error {
+            background: #fed7d7;
+            color: #c53030;
+            border: 1px solid #feb2b2;
+        }
+
+        /* Badge de Segurança */
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #718096;
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .hero-section {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                min-height: auto;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .form-container {
+                padding: 30px 20px;
+            }
+
+            .stats {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-text h1 {
+                font-size: 2rem;
+            }
+
+            .hero-text p {
+                font-size: 1rem;
+            }
+
+            .stats {
+                gap: 15px;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Animações simples */
+        .fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero-section">
+            <!-- Lado Esquerdo - Texto -->
+            <div class="hero-text fade-in">
+                <h1>Transforme sua Carreira</h1>
+                <p>Descubra o poder do aprendizado online com cursos práticos e certificações reconhecidas no mercado. Sua nova carreira começa aqui!</p>
+                
+                <div class="stats">
+                    <div class="stat">
+                        <span class="stat-number">50k+</span>
+                        <span class="stat-label">Alunos Ativos</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">98%</span>
+                        <span class="stat-label">Aprovação</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">100+</span>
+                        <span class="stat-label">Cursos</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lado Direito - Formulário -->
+            <div class="form-container fade-in">
+                <h2 class="form-title">Comece sua Jornada</h2>
+                <p class="form-subtitle">Preencha seus dados e descubra os melhores cursos para você</p>
+                
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">Complete seu cadastro: 0%</div>
+                </div>
+
+                <div class="status-message" id="statusMessage"></div>
+
+                <form id="leadForm">
+                    <div class="form-group">
+                        <label class="form-label" for="nome">Qual seu nome?</label>
+                        <input type="text" class="form-input" id="nome" name="nome" placeholder="Digite seu nome completo" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="email">Qual seu melhor e-mail?</label>
+                        <input type="email" class="form-input" id="email" name="email" placeholder="seu@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="whatsapp">Qual seu telefone com WhatsApp?</label>
+                        <input type="tel" class="form-input" id="whatsapp" name="whatsapp" placeholder="(11) 99999-9999">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="cursos">Que cursos te interessam?</label>
+                        <textarea class="form-input form-textarea" id="cursos" name="cursos" placeholder="Descreva quais áreas ou cursos específicos você gostaria de saber mais..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        Quero Conhecer os Cursos
+                    </button>
+                </form>
+
+                <div class="security-badge">
+                    🔒 Seus dados estão protegidos e seguros
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados do lead em memória
+        let leadData = {
+            id: null,
+            nome: '',
+            email: '',
+            whatsapp: '',
+            cursos: '',
+            timestamp: null,
+            completed: false
+        };
+
+        // Elementos DOM
+        const form = document.getElementById('leadForm');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const statusMessage = document.getElementById('statusMessage');
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gerar ID único para o lead
+            leadData.id = 'lead_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            
+            // Event listeners para campos
+            setupFieldListeners();
+            
+            console.log('Formulário inicializado com ID:', leadData.id);
+        });
+
+        function setupFieldListeners() {
+            const fields = ['nome', 'email', 'whatsapp', 'cursos'];
+            
+            fields.forEach(fieldName => {
+                const field = document.getElementById(fieldName);
+                field.addEventListener('input', () => handleFieldUpdate(fieldName, field.value));
+                field.addEventListener('blur', () => savePartialData(fieldName, field.value));
+            });
+
+            form.addEventListener('submit', handleFormSubmit);
+        }
+
+        function handleFieldUpdate(fieldName, value) {
+            leadData[fieldName] = value;
+            updateProgress();
+        }
+
+        function savePartialData(fieldName, value) {
+            if (value.trim()) {
+                leadData[fieldName] = value;
+                leadData.timestamp = new Date().toISOString();
+                
+                // Simular salvamento no banco (aqui você faria a requisição real)
+                console.log('Salvando dados parciais:', {
+                    id: leadData.id,
+                    field: fieldName,
+                    value: value,
+                    timestamp: leadData.timestamp
+                });
+
+                showStatusMessage(`${getFieldDisplayName(fieldName)} salvo com sucesso!`, 'info');
+            }
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            // Validação básica
+            if (!leadData.email || !leadData.nome) {
+                showStatusMessage('Por favor, preencha pelo menos seu nome e email.', 'error');
+                return;
+            }
+
+            // Marcar como completo
+            leadData.completed = true;
+            leadData.timestamp = new Date().toISOString();
+
+            // Simular envio final (aqui você faria a requisição real)
+            console.log('Enviando lead completo:', leadData);
+
+            // Feedback visual
+            showStatusMessage('Cadastro realizado com sucesso! Em breve entraremos em contato.', 'success');
+            
+            // Desabilitar botão temporariamente
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.style.background = '#48bb78';
+            submitBtn.textContent = 'Cadastro Realizado!';
+            submitBtn.disabled = true;
+
+            // Reset do formulário após delay
+            setTimeout(() => {
+                form.reset();
+                resetProgress();
+                submitBtn.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+                submitBtn.textContent = 'Quero Conhecer os Cursos';
+                submitBtn.disabled = false;
+                statusMessage.classList.remove('show');
+                
+                leadData = {
+                    id: 'lead_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                    nome: '', email: '', whatsapp: '', cursos: '',
+                    timestamp: null, completed: false
+                };
+            }, 5000);
+        }
+
+        function updateProgress() {
+            const fields = ['nome', 'email', 'whatsapp', 'cursos'];
+            const filledFields = fields.filter(field => leadData[field].trim().length > 0);
+            const progress = (filledFields.length / fields.length) * 100;
+            
+            progressFill.style.width = progress + '%';
+            progressText.textContent = `Complete seu cadastro: ${Math.round(progress)}%`;
+        }
+
+        function resetProgress() {
+            progressFill.style.width = '0%';
+            progressText.textContent = 'Complete seu cadastro: 0%';
+        }
+
+        function showStatusMessage(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message status-${type} show`;
+            
+            setTimeout(() => {
+                statusMessage.classList.remove('show');
+            }, 4000);
+        }
+
+        function getFieldDisplayName(fieldName) {
+            const names = {
+                nome: 'Nome',
+                email: 'E-mail',
+                whatsapp: 'WhatsApp',
+                cursos: 'Interesses'
+            };
+            return names[fieldName] || fieldName;
+        }
+
+        // Máscara para WhatsApp
+        document.getElementById('whatsapp').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 11) {
+                value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+            } else if (value.length >= 7) {
+                value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+            } else if (value.length >= 3) {
+                value = value.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+            }
+            e.target.value = value;
+        });
+
+        // Log para debug
+        console.log('Página carregada, formulário deve estar visível');
+    </script>
+</body>
+</html>
